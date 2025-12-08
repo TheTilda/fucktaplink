@@ -1,0 +1,35 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title?: string;
+	description?: string;
+	image?: string;
+}
+
+const { title = 'Marketplace landing', description = '', image } = Astro.props;
+const metaDescription = description.slice(0, 140);
+---
+
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<title>{title}</title>
+		{metaDescription && <meta name="description" content={metaDescription} />}
+		{image && <link rel="preload" as="image" href={image} fetchpriority="high" />}
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		{metaDescription && <meta property="og:description" content={metaDescription} />}
+		{image && <meta property="og:image" content={image} />}
+		<meta name="color-scheme" content="light" />
+	</head>
+	<body class="bg-white text-slate-900 antialiased">
+		<main>
+			<slot />
+		</main>
+	</body>
+</html>
+

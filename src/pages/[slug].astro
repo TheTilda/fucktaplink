@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProductPage from '../components/ProductPage.astro';
+import { getProductBySlug } from '../lib/productStore';
+
+const product = await getProductBySlug(Astro.params.slug || '');
+
+if (!product) {
+	return Astro.redirect('/404');
+}
+---
+
+<BaseLayout
+	title={product.title}
+	description={product.description}
+	image={product.image}
+>
+	<ProductPage product={product} />
+</BaseLayout>
+

@@ -1,0 +1,61 @@
+---
+import MarketplaceButton from './MarketplaceButton.astro';
+import StatsCards from './StatsCards.astro';
+import type { Product } from '../lib/productStore';
+
+interface Props {
+	product: Product;
+}
+
+const { product } = Astro.props;
+
+const marketplaces = [
+	{ key: 'wb', label: 'Wildberries', color: '#A53DFF' },
+	{ key: 'ozon', label: 'Ozon', color: '#3B6CFF' },
+	{ key: 'ym', label: 'Яндекс Маркет', color: '#F4C542' }
+].filter(({ key }) => product.links[key as keyof typeof product.links]);
+---
+
+<div class="mx-auto flex min-h-screen max-w-5xl flex-col gap-8 px-4 py-8 sm:px-6 sm:py-12 lg:px-10">
+	<header class="grid grid-cols-1 items-start gap-6 sm:grid-cols-[1fr_1.2fr]">
+		<div class="flex justify-center">
+			<img
+				src={product.image}
+				alt={product.title}
+				loading="eager"
+				fetchpriority="high"
+				class="h-auto w-full max-w-[320px] rounded-3xl bg-slate-50 object-contain ring-1 ring-slate-100"
+			/>
+		</div>
+		<div class="space-y-4">
+			<div class="space-y-2">
+				<p class="text-xs uppercase tracking-[0.2em] text-slate-500">Суперлайт лендинг</p>
+				<h1 class="text-3xl font-bold leading-tight text-slate-900 sm:text-4xl">
+					{product.title}
+				</h1>
+				<p class="text-base leading-relaxed text-slate-600 sm:text-lg">
+					{product.description}
+				</p>
+			</div>
+			<StatsCards rating={product.rating} reviews={product.reviews} purchases={product.purchases} />
+		</div>
+	</header>
+
+	<section class="space-y-3">
+		<h2 class="text-xl font-semibold text-slate-900 sm:text-2xl">Выбери маркетплейс</h2>
+		<div class="flex flex-col gap-3">
+			{marketplaces.map((marketplace) => (
+				<MarketplaceButton
+					label={`${marketplace.label}`}
+					color={marketplace.color}
+					href={product.links[marketplace.key as keyof typeof product.links] as string}
+				/>
+			))}
+		</div>
+	</section>
+
+	<footer class="mt-auto text-sm leading-relaxed text-slate-500">
+		Не является публичной офертой. Информация предоставлена партнёром.
+	</footer>
+</div>
+

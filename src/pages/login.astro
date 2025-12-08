@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Вход в админку" description="Авторизация администратора">
+	<section class="mx-auto flex max-w-md flex-col gap-4 px-4 py-12 sm:py-16">
+		<header class="space-y-2">
+			<p class="text-xs uppercase tracking-[0.2em] text-slate-500">Админ</p>
+			<h1 class="text-3xl font-bold text-slate-900">Вход</h1>
+			<p class="text-sm text-slate-600">Введите токен администратора, чтобы продолжить.</p>
+		</header>
+
+		<form id="login-form" class="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_1px_0_#e2e8f0]">
+			<label class="flex flex-col gap-1 text-sm text-slate-700">
+				<span>Токен</span>
+				<input
+					id="token-input"
+					type="password"
+					required
+					class="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+					placeholder="admin token"
+				/>
+			</label>
+			<button
+				type="submit"
+				class="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 active:translate-y-[1px]"
+			>
+				Войти
+			</button>
+			<p id="error" class="text-xs text-rose-600 hidden">Неверный токен</p>
+		</form>
+	</section>
+
+	<script type="module">
+		const form = document.getElementById('login-form');
+		const input = document.getElementById('token-input');
+		const errorEl = document.getElementById('error');
+
+		const validate = async (token) => {
+			const res = await fetch('/api/products', {
+				headers: { 'x-admin-token': token }
+			});
+			return res.ok;
+		};
+
+		form.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			const token = input.value.trim();
+			if (!token) return;
+			const ok = await validate(token);
+			if (!ok) {
+				errorEl.classList.remove('hidden');
+				return;
+			}
+			localStorage.setItem('mp-token', token);
+			window.location.href = '/admin';
+		});
+
+		// If token already saved, try auto-login
+		const saved = localStorage.getItem('mp-token');
+		if (saved) {
+			input.value = saved;
+		}
+	</script>
+</BaseLayout>
+

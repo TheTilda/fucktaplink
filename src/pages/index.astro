@@ -1,16 +1,31 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getProducts } from '../lib/productStore';
 
+const products = await getProducts();
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="Быстрый лендинг" description="Мини-лендинги под товары маркетплейсов">
+	<section class="mx-auto flex max-w-2xl flex-col gap-4 px-4 py-10 sm:py-16">
+		<header class="space-y-3">
+			<p class="text-xs uppercase tracking-[0.2em] text-slate-500">Генератор</p>
+			<h1 class="text-3xl font-bold leading-tight text-slate-900">Мини-лендинги под товары</h1>
+			<p class="text-base text-slate-600">
+				Все страницы генерируются из JSON и собираются статикой для максимальной скорости.
+			</p>
+		</header>
+		<div class="space-y-2">
+			<p class="text-sm font-semibold text-slate-500">Демо</p>
+			<ul class="space-y-2">
+				{products.map((product) => (
+					<li class="rounded-2xl border border-slate-100 bg-white px-4 py-3 shadow-[0_1px_0_#e2e8f0]">
+						<a class="flex items-center justify-between text-slate-900" href={`/${product.slug}/`}>
+							<span class="font-medium">{product.title}</span>
+							<span class="text-sm text-slate-500">Открыть</span>
+						</a>
+					</li>
+				))}
+			</ul>
+		</div>
+	</section>
+</BaseLayout>

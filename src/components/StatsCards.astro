@@ -1,0 +1,30 @@
+---
+interface Props {
+	rating: number;
+	reviews: number;
+	purchases: number;
+}
+
+const { rating, reviews, purchases } = Astro.props;
+
+const stats = [
+	{ label: 'Рейтинг', value: rating.toFixed(1), icon: '★', iconClass: 'text-amber-400' },
+	{ label: 'Отзывов', value: reviews.toLocaleString('ru-RU'), icon: '💬' },
+	{ label: 'Покупок', value: purchases.toLocaleString('ru-RU'), icon: '🛒' }
+];
+---
+
+<section class="grid grid-flow-col auto-cols-fr gap-3 overflow-x-auto pb-1">
+	{stats.map((item) => (
+		<div class="rounded-soft border border-slate-100 bg-white px-4 py-3 shadow-[0_1px_0_#e2e8f0]">
+			<div class="flex items-center gap-2 text-sm text-slate-500">
+				<span class={item.iconClass} aria-hidden="true">
+					{item.icon}
+				</span>
+				<span class="font-medium">{item.label}</span>
+			</div>
+			<p class="mt-1 text-2xl font-bold text-slate-900">{item.value}</p>
+		</div>
+	))}
+	</section>
+
