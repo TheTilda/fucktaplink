@@ -12,5 +12,19 @@
       "ozon": "https://ozon.ru",
       "ym": "https://martket.yandex.ru"
     }
+  },
+  {
+    "slug": "soocas-d3-green",
+    "title": "soocas d3 green",
+    "description": "Щетка для настоящих победителей",
+    "image": "/uploads/72659f0a525d30617e9d57c3ea92bb0892d41bce.webp",
+    "rating": 4.9,
+    "reviews": 513,
+    "purchases": 9234,
+    "links": {
+      "wb": "https://wildberries.ru",
+      "ozon": "https://ozon.ru",
+      "ym": "https://martket.yandex.ru"
+    }
   }
 ]

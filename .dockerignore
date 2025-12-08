@@ -1,0 +1,15 @@
+node_modules
+dist
+.git
+.gitignore
+npm-debug.log
+pnpm-lock.yaml
+yarn.lock
+.env
+.DS_Store
+.cache
+logs
+*.log
+.vscode
+.idea
+
