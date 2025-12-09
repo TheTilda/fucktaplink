@@ -5,10 +5,12 @@ services:
     build: .
     container_name: fucktaplink
     ports:
-      - "${PORT:-80}:80"
+      - "${EXTERNAL_PORT:-80}:${INTERNAL_PORT:-80}"
     environment:
+      # КРИТИЧЕСКИ ВАЖНО: HOST должен быть 0.0.0.0 для доступа извне контейнера
       - HOST=0.0.0.0
-      - PORT=80
+      # PORT может быть переопределен через переменные окружения платформы
+      - PORT=${INTERNAL_PORT:-80}
     env_file:
       - .env
     restart: unless-stopped
