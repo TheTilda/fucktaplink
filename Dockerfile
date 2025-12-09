@@ -23,9 +23,10 @@ COPY --from=builder /app/public ./public
 
 RUN npm ci --omit=dev
 
-# Копируем скрипт запуска
+# Копируем скрипты запуска
 COPY start.sh /app/start.sh
-RUN chmod +x /app/start.sh
+COPY start.js /app/start.js
+RUN chmod +x /app/start.sh /app/start.js
 
 # КРИТИЧЕСКИ ВАЖНО: HOST должен быть 0.0.0.0 для доступа извне контейнера
 # Если не установлен, приложение будет недоступно из интернета
@@ -40,8 +41,9 @@ ENV PORT=3000
 # Платформа использует этот порт для проксирования через свой Nginx
 EXPOSE 3000
 
-# Запуск сервера через скрипт для гарантированной установки переменных
-CMD ["/app/start.sh"]
+# Запуск сервера через Node.js wrapper для гарантированной установки переменных
+# Используем Node.js скрипт вместо shell скрипта для лучшего контроля
+CMD ["node", "/app/start.js"]
 
 
 

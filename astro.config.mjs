@@ -11,7 +11,7 @@ export default defineConfig({
 	adapter: node({ 
 		mode: 'standalone',
 		// В standalone режиме host и port читаются из process.env
-		// Но можно указать значения по умолчанию для dev режима
+		// Но для production явно указываем host через параметры
 	}),
 	// Конфигурация сервера
 	// В standalone режиме переменные окружения HOST и PORT имеют приоритет
