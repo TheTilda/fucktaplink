@@ -18,6 +18,17 @@ docker build -t fucktaplink .
 
 ### 3. Запуск контейнера
 
+**Для доступа с внешнего домена используйте порт 80:**
+```bash
+docker run -d \
+  --name fucktaplink \
+  -p 80:3000 \
+  --env-file .env \
+  --restart unless-stopped \
+  fucktaplink
+```
+
+Или для локального тестирования на порту 3000:
 ```bash
 docker run -d \
   --name fucktaplink \
@@ -36,12 +47,56 @@ docker run -d \
 DATABASE_URL=mysql://fucktaplink:password@db:3306/fucktaplink
 ```
 
-Запуск:
+### Настройка порта для внешнего доступа
+
+Для доступа с внешнего домена нужно использовать порт 80. Есть два варианта:
+
+#### Вариант 1: Прямое использование порта 80
+
+В `.env` установите:
+```env
+PORT=80
+```
+
+И запустите:
 ```bash
 docker-compose up -d
 ```
 
-Остановка:
+**Важно:** Для использования порта 80 нужны root права. Если запускаете без sudo, используйте вариант 2.
+
+#### Вариант 2: Nginx Reverse Proxy (рекомендуется для production)
+
+Создайте файл `nginx.conf`:
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+Или используйте готовый docker-compose с nginx (см. раздел ниже).
+
+### Запуск
+
+```bash
+docker-compose up -d
+```
+
+### Остановка
+
 ```bash
 docker-compose down
 ```
@@ -82,13 +137,29 @@ docker build -t fucktaplink . --no-cache
 docker-compose up -d --build
 ```
 
+## Production деплой с Nginx
+
+Для production используйте `docker-compose.prod.yml` с встроенным nginx:
+
+```bash
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+Nginx будет слушать на порту 80 и проксировать запросы на приложение (порт 3000).
+
+**Настройка домена:** В файле `nginx.conf` замените `server_name _;` на ваш домен:
+```nginx
+server_name your-domain.com www.your-domain.com;
+```
+
 ## Production рекомендации
 
-1. **Используйте docker-compose** для управления несколькими сервисами
-2. **Настройте reverse proxy** (nginx/traefik) для HTTPS
+1. **Используйте docker-compose.prod.yml** с nginx для production
+2. **Настройте HTTPS** через Let's Encrypt (certbot) или другой SSL сертификат
 3. **Используйте volumes** для персистентных данных БД
 4. **Настройте логирование** через docker logs или внешние системы
 5. **Используйте secrets** для чувствительных данных вместо .env файлов
+6. **Настройте firewall** - откройте только порты 80 и 443
 
 ## Переменные окружения
 
