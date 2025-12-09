@@ -23,6 +23,10 @@ COPY --from=builder /app/public ./public
 
 RUN npm ci --omit=dev
 
+# Копируем скрипт запуска
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
 # КРИТИЧЕСКИ ВАЖНО: HOST должен быть 0.0.0.0 для доступа извне контейнера
 # Если не установлен, приложение будет недоступно из интернета
 ENV HOST=0.0.0.0
@@ -36,10 +40,8 @@ ENV PORT=3000
 # Платформа использует этот порт для проксирования через свой Nginx
 EXPOSE 3000
 
-# Запуск сервера
-# Astro Node adapter в standalone режиме читает HOST и PORT из process.env
-# Убедитесь, что эти переменные установлены в настройках приложения на платформе
-CMD ["node", "dist/server/entry.mjs"]
+# Запуск сервера через скрипт для гарантированной установки переменных
+CMD ["/app/start.sh"]
 
 
 

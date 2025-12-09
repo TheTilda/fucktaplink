@@ -13,9 +13,11 @@ export default defineConfig({
 		// В standalone режиме host и port читаются из process.env
 		// Но можно указать значения по умолчанию для dev режима
 	}),
-	// Конфигурация сервера (используется в dev режиме, в standalone читается из env)
+	// Конфигурация сервера
+	// В standalone режиме переменные окружения HOST и PORT имеют приоритет
+	// Но для надежности явно указываем host: '0.0.0.0' для production
 	server: {
-		host: true, // Слушать на всех интерфейсах (0.0.0.0)
+		host: process.env.NODE_ENV === 'production' ? '0.0.0.0' : true,
 		port: process.env.PORT ? parseInt(process.env.PORT) : 4321,
 	}
 });
