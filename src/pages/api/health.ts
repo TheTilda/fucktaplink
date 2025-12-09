@@ -3,19 +3,14 @@ import type { APIRoute } from 'astro';
 /**
  * Health check endpoint для TimewebCloud Apps
  * Платформа использует этот endpoint для проверки работоспособности приложения
+ * Должен отвечать быстро (без задержек) и возвращать 200 OK
  */
 export const GET: APIRoute = async () => {
-	return new Response(
-		JSON.stringify({
-			status: 'ok',
-			timestamp: new Date().toISOString(),
-			service: 'fucktaplink'
-		}),
-		{
-			status: 200,
-			headers: {
-				'Content-Type': 'application/json'
-			}
+	// Простой и быстрый ответ без лишних вычислений
+	return new Response('OK', {
+		status: 200,
+		headers: {
+			'Content-Type': 'text/plain'
 		}
-	);
+	});
 };
