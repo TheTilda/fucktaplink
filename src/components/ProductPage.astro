@@ -1,7 +1,8 @@
 ---
+import { Image } from 'astro:assets';
 import MarketplaceButton from './MarketplaceButton.astro';
 import StatsCards from './StatsCards.astro';
-import type { Product } from '../lib/productStore';
+import type { Product } from '../data/products';
 
 interface Props {
 	product: Product;
@@ -19,9 +20,11 @@ const marketplaces = [
 <div class="mx-auto flex min-h-screen max-w-5xl flex-col gap-8 px-4 py-8 sm:px-6 sm:py-12 lg:px-10">
 	<header class="grid grid-cols-1 items-start gap-6 sm:grid-cols-[1fr_1.2fr]">
 		<div class="flex justify-center">
-			<img
-				src={product.image}
+			<Image
+				src={product.imageSrc}
 				alt={product.title}
+				widths={[320, 480, 640]}
+				sizes="(max-width: 640px) 90vw, 320px"
 				loading="eager"
 				fetchpriority="high"
 				class="h-auto w-full max-w-[320px] rounded-3xl bg-slate-50 object-contain ring-1 ring-slate-100"

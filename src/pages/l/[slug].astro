@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import StatsCards from '../../components/StatsCards.astro';
+import MarketplaceButton from '../../components/MarketplaceButton.astro';
+import { db } from '../../server/db/client';
+import { landings } from '../../server/db/schema';
+import { eq } from 'drizzle-orm';
+
+const slug = Astro.params.slug || '';
+
+const landing = await db.query.landings.findFirst({
+	where: eq(landings.slug, slug)
+});
+
+if (!landing || landing.status !== 'active') {
+	return Astro.redirect('/404');
+}
+
+// Увеличиваем счетчик просмотров
+void db
+	.update(landings)
+	.set({ views: (landing.views || 0) + 1 })
+	.where(eq(landings.id, landing.id))
+	.catch(() => {});
+
+const rating = parseFloat(landing.rating || '0');
+const reviews = landing.reviews || 0;
+const purchases = landing.purchases || 0;
+---
+
+<BaseLayout
+	title={landing.title}
+	description={landing.description}
+	image={landing.imageUrl || undefined}
+>
+	<div class="mx-auto flex min-h-screen max-w-5xl flex-col gap-8 px-4 py-8 sm:px-6 sm:py-12 lg:px-10">
+		<header class="grid grid-cols-1 items-start gap-6 sm:grid-cols-[1fr_1.2fr]">
+			<div class="flex justify-center">
+				{landing.imageUrl ? (
+					<img
+						src={landing.imageUrl}
+						alt={landing.title}
+						class="h-auto w-full max-w-[320px] rounded-3xl bg-slate-50 object-contain ring-1 ring-slate-100"
+					/>
+				) : (
+					<div class="flex h-64 w-full max-w-[320px] items-center justify-center rounded-3xl bg-slate-100 text-slate-400">
+						Нет изображения
+					</div>
+				)}
+			</div>
+			<div class="space-y-4">
+				<div class="space-y-2">
+					<p class="text-xs uppercase tracking-[0.2em] text-slate-500">Суперлайт лендинг</p>
+					<h1 class="text-3xl font-bold leading-tight text-slate-900 sm:text-4xl">
+						{landing.title}
+					</h1>
+					<p class="text-base leading-relaxed text-slate-600 sm:text-lg">
+						{landing.description}
+					</p>
+				</div>
+				<StatsCards rating={rating} reviews={reviews} purchases={purchases} />
+			</div>
+		</header>
+
+		<section class="space-y-3">
+			<h2 class="text-xl font-semibold text-slate-900 sm:text-2xl">Выбери маркетплейс</h2>
+			<div class="flex flex-col gap-3">
+				{landing.linkWb && (
+					<MarketplaceButton
+						label="Wildberries"
+						color="#A53DFF"
+						href={landing.linkWb}
+					/>
+				)}
+				{landing.linkOzon && (
+					<MarketplaceButton
+						label="Ozon"
+						color="#3B6CFF"
+						href={landing.linkOzon}
+					/>
+				)}
+				{landing.linkYm && (
+					<MarketplaceButton
+						label="Яндекс Маркет"
+						color="#F4C542"
+						href={landing.linkYm}
+					/>
+				)}
+			</div>
+		</section>
+
+		<footer class="mt-auto text-sm leading-relaxed text-slate-500">
+			Не является публичной офертой. Информация предоставлена партнёром.
+		</footer>
+	</div>
+</BaseLayout>

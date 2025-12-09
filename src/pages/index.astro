@@ -1,8 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getProducts } from '../lib/productStore';
-
-const products = await getProducts();
+import { products } from '../data/products';
 ---
 
 <BaseLayout title="Быстрый лендинг" description="Мини-лендинги под товары маркетплейсов">

@@ -1,9 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProductPage from '../components/ProductPage.astro';
-import { getProductBySlug } from '../lib/productStore';
+import { getProductBySlug, products } from '../data/products';
 
-const product = await getProductBySlug(Astro.params.slug || '');
+export function getStaticPaths() {
+	return products.map((product) => ({
+		params: { slug: product.slug }
+	}));
+}
+
+const product = getProductBySlug(Astro.params.slug || '');
 
 if (!product) {
 	return Astro.redirect('/404');
@@ -13,7 +19,7 @@ if (!product) {
 <BaseLayout
 	title={product.title}
 	description={product.description}
-	image={product.image}
+	image={product.imageSrc.src}
 >
 	<ProductPage product={product} />
 </BaseLayout>

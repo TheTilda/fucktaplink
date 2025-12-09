@@ -1,0 +1,254 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Кабинет" description="Управление ссылками">
+	<section class="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-10 sm:py-14">
+		<header class="flex items-center justify-between">
+			<div class="space-y-1">
+				<p class="text-xs uppercase tracking-[0.2em] text-slate-500">Кабинет</p>
+				<h1 class="text-3xl font-bold text-slate-900">Мои ссылки</h1>
+			</div>
+			<div class="flex gap-2">
+				<a
+					href="/landings"
+					class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
+				>
+					Лендинги
+				</a>
+				<button
+					id="logout-btn"
+					class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-100 active:translate-y-[1px]"
+				>
+					Выйти
+				</button>
+			</div>
+		</header>
+
+		<form id="link-form" class="grid grid-cols-1 gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_1px_0_#e2e8f0] sm:grid-cols-2">
+			<input type="hidden" id="edit-id" name="editId" />
+			<label class="flex flex-col gap-1 text-sm text-slate-700">
+				<span>Название *</span>
+				<input id="input-title" name="title" required class="rounded-lg border border-slate-200 px-3 py-2 text-sm" placeholder="Моя ссылка" />
+			</label>
+			<label class="flex flex-col gap-1 text-sm text-slate-700 sm:col-span-2">
+				<span>URL *</span>
+				<input id="input-url" name="url" type="url" required class="rounded-lg border border-slate-200 px-3 py-2 text-sm" placeholder="https://..." />
+			</label>
+			<div class="flex items-center gap-2 text-sm text-slate-700">
+				<span>Статус:</span>
+				<select id="select-status" name="status" class="rounded-lg border border-slate-200 px-3 py-2 text-sm">
+					<option value="active">Активна</option>
+					<option value="inactive">Выключена</option>
+				</select>
+			</div>
+			<div class="flex flex-wrap items-center gap-3 sm:col-span-2">
+				<button
+					type="submit"
+					id="submit-btn"
+					class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 active:translate-y-[1px]"
+				>
+					Создать
+				</button>
+				<button
+					type="button"
+					id="cancel-btn"
+					class="hidden rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-100 active:translate-y-[1px]"
+				>
+					Отмена
+				</button>
+				<input id="upload-file" type="file" accept="image/*" class="hidden" />
+				<button
+					type="button"
+					id="choose-image"
+					class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-100 active:translate-y-[1px]"
+				>
+					Добавить обложку (опц.)
+				</button>
+				<span id="file-name" class="text-xs text-slate-500">Файл не выбран</span>
+			</div>
+			<p id="form-error" class="text-xs text-rose-600 hidden sm:col-span-2">Ошибка сохранения</p>
+		</form>
+
+		<div class="space-y-3">
+			<h2 class="text-xl font-semibold text-slate-900">Ссылки</h2>
+			<div id="links-list" class="grid grid-cols-1 gap-3 sm:grid-cols-2"></div>
+			<p id="links-empty" class="text-sm text-slate-500 hidden">Ссылок пока нет.</p>
+		</div>
+	</section>
+
+	<script type="module">
+		const logoutBtn = document.getElementById('logout-btn');
+		const listEl = document.getElementById('links-list');
+		const emptyEl = document.getElementById('links-empty');
+		const form = document.getElementById('link-form');
+		const errorEl = document.getElementById('form-error');
+		const fileInput = document.getElementById('upload-file');
+		const chooseBtn = document.getElementById('choose-image');
+		const fileName = document.getElementById('file-name');
+		const editIdInput = document.getElementById('edit-id');
+		const submitBtn = document.getElementById('submit-btn');
+		const cancelBtn = document.getElementById('cancel-btn');
+		const inputTitle = document.getElementById('input-title');
+		const inputUrl = document.getElementById('input-url');
+		const selectStatus = document.getElementById('select-status');
+
+		let currentLinks = [];
+		let chosenFile = null;
+		let editingId = null;
+
+		const fetchLinks = async () => {
+			const res = await fetch('/api/links');
+			if (!res.ok) {
+				if (res.status === 401) window.location.href = '/login';
+				return;
+			}
+			const data = await res.json();
+			currentLinks = data.links || [];
+			renderList();
+		};
+
+		const resetForm = () => {
+			form.reset();
+			fileInput.value = '';
+			fileName.textContent = 'Файл не выбран';
+			chosenFile = null;
+			editingId = null;
+			editIdInput.value = '';
+			submitBtn.textContent = 'Создать';
+			cancelBtn.classList.add('hidden');
+		};
+
+		const startEdit = (item) => {
+			editingId = item.id;
+			editIdInput.value = item.id;
+			inputTitle.value = item.title;
+			inputUrl.value = item.url;
+			selectStatus.value = item.status || 'active';
+			fileName.textContent = item.imageUrl ? 'Текущее изображение сохранено' : 'Файл не выбран';
+			chosenFile = null;
+			submitBtn.textContent = 'Сохранить';
+			cancelBtn.classList.remove('hidden');
+			form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+		};
+
+		const renderList = () => {
+			listEl.innerHTML = '';
+			if (!currentLinks.length) {
+				emptyEl.classList.remove('hidden');
+				return;
+			}
+			emptyEl.classList.add('hidden');
+			for (const item of currentLinks) {
+				const card = document.createElement('div');
+				card.className =
+					'rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_1px_0_#e2e8f0] flex flex-col gap-2';
+				card.innerHTML = `
+					<div class="flex flex-col gap-1">
+						${item.imageUrl ? `<img src="${item.imageUrl}" class="h-24 w-full rounded-xl object-cover border border-slate-100" />` : ''}
+						<a href="/r/${item.id}" target="_blank" class="text-sm font-semibold text-slate-900 hover:underline">${item.title}</a>
+						<p class="text-xs text-slate-500 truncate">${item.url}</p>
+						<p class="text-xs text-slate-500">Кликов: ${item.clicks ?? 0}</p>
+					</div>
+					<div class="flex gap-2">
+						<button data-id="${item.id}" class="edit-btn rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100">Редактировать</button>
+						<button data-id="${item.id}" class="del-btn rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-100">Удалить</button>
+					</div>
+				`;
+				listEl.appendChild(card);
+			}
+			listEl.querySelectorAll('.del-btn').forEach((btn) =>
+				btn.addEventListener('click', async () => {
+					const id = Number(btn.dataset.id);
+					await fetch('/api/links', {
+						method: 'DELETE',
+						headers: { 'content-type': 'application/json' },
+						body: JSON.stringify({ id })
+					});
+					await fetchLinks();
+				})
+			);
+			listEl.querySelectorAll('.edit-btn').forEach((btn) =>
+				btn.addEventListener('click', () => {
+					const id = Number(btn.dataset.id);
+					const item = currentLinks.find((l) => l.id === id);
+					if (item) startEdit(item);
+				})
+			);
+		};
+
+		chooseBtn.addEventListener('click', () => fileInput.click());
+		fileInput.addEventListener('change', () => {
+			const file = fileInput.files?.[0];
+			chosenFile = file || null;
+			fileName.textContent = file ? file.name : 'Файл не выбран';
+		});
+
+		form.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			errorEl.classList.add('hidden');
+			const formData = new FormData(form);
+			let imageUrl = null;
+			
+			if (chosenFile) {
+				// Загружаем файл через сервер (избегаем CORS)
+				const uploadFormData = new FormData();
+				uploadFormData.append('file', chosenFile);
+				
+				const uploadRes = await fetch('/api/upload', {
+					method: 'POST',
+					body: uploadFormData
+				});
+				if (!uploadRes.ok) {
+					errorEl.textContent = 'Не удалось загрузить файл';
+					errorEl.classList.remove('hidden');
+					return;
+				}
+				const upload = await uploadRes.json();
+				imageUrl = upload.url;
+			} else if (editingId) {
+				// При редактировании, если файл не выбран, сохраняем текущее изображение
+				const currentItem = currentLinks.find((l) => l.id === editingId);
+				if (currentItem?.imageUrl) {
+					imageUrl = currentItem.imageUrl;
+				}
+			}
+
+			const payload = {
+				title: formData.get('title'),
+				url: formData.get('url'),
+				status: formData.get('status'),
+				...(imageUrl && { image: imageUrl })
+			};
+
+			const method = editingId ? 'PUT' : 'POST';
+			if (editingId) {
+				payload.id = editingId;
+			}
+
+			const res = await fetch('/api/links', {
+				method,
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify(payload)
+			});
+			if (!res.ok) {
+				errorEl.classList.remove('hidden');
+				return;
+			}
+			resetForm();
+			await fetchLinks();
+		});
+
+		cancelBtn.addEventListener('click', () => {
+			resetForm();
+		});
+
+		logoutBtn.addEventListener('click', async () => {
+			await fetch('/api/auth/logout', { method: 'POST' });
+			window.location.href = '/login';
+		});
+
+		fetchLinks();
+	</script>
+</BaseLayout>
+

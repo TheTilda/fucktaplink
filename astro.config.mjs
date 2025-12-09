@@ -1,10 +1,12 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
+import node from '@astrojs/node';
 
-// Server output to allow dynamic data fetch (admin/API)
+// Server output with Node adapter for API/auth
 export default defineConfig({
 	site: 'https://example.com', // replace per deployment
 	integrations: [tailwind({ applyBaseStyles: false })],
-	output: 'server'
+	output: 'server',
+	adapter: node({ mode: 'standalone' })
 });

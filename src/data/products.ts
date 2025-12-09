@@ -27,3 +27,6 @@ export const products: Product[] = mapWithAssets();
 export const getProductBySlug = (slug: string): Product | undefined =>
 	products.find((item) => item.slug === slug);
 
+
+
+
