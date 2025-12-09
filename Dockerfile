@@ -23,9 +23,14 @@ COPY --from=builder /app/public ./public
 
 RUN npm ci --omit=dev
 
-EXPOSE 3000
+# Приложение слушает на порту 80 для production
+ENV HOST=0.0.0.0
+ENV PORT=80
 
-CMD ["node", "dist/server/entry.mjs"]
+EXPOSE 80
+
+# Явно передаем HOST и PORT при запуске для Astro Node adapter
+CMD ["sh", "-c", "HOST=${HOST:-0.0.0.0} PORT=${PORT:-80} node dist/server/entry.mjs"]
 
 
 
