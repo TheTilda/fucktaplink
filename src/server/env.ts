@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
-// В Astro используем import.meta.env для server-side переменных
-const envVars = typeof import.meta !== 'undefined' && import.meta.env 
-	? import.meta.env 
-	: process.env;
+// В standalone режиме Astro переменные окружения доступны только через process.env
+// import.meta.env работает только в dev режиме и при сборке
+// Для production используем process.env напрямую
+const envVars = process.env;
 
 const envSchema = z.object({
 	NODE_ENV: z.string().default('development'),
