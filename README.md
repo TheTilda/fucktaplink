@@ -135,11 +135,23 @@ pm2 start dist/server/entry.mjs --name fucktaplink
 ```
 
 ### Docker
-В проекте есть `Dockerfile` для контейнеризации:
+
+#### Быстрый деплой
 ```bash
+# Сборка образа
 docker build -t fucktaplink .
-docker run -p 3000:3000 --env-file .env fucktaplink
+
+# Запуск контейнера
+docker run -d --name fucktaplink -p 3000:3000 --env-file .env --restart unless-stopped fucktaplink
 ```
+
+#### Применение миграций
+```bash
+docker exec -it fucktaplink npm run db:generate
+docker exec -it fucktaplink npm run db:push
+```
+
+Подробная инструкция по деплою: [DEPLOY.md](./DEPLOY.md)
 
 ## Структура проекта
 
