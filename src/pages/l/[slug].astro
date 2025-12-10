@@ -37,8 +37,8 @@ const layoutType = landing.layoutType || 'standard';
 	{layoutType === 'compact' ? (
 		<!-- Компактный вариант: все на одном экране мобильного устройства -->
 		<div class="flex h-screen w-full flex-col overflow-hidden px-3 py-3 sm:px-4 sm:py-4">
-			<!-- Верхний блок: картинка слева (чуть больше), текст справа -->
-			<header class="mb-1 grid grid-cols-[1.3fr_2.7fr] items-start gap-2 sm:gap-3">
+			<!-- Верхний блок: картинка слева (больше), текст справа -->
+			<header class="mb-1 grid grid-cols-[1.5fr_2.5fr] items-start gap-2 sm:gap-3">
 				<div class="flex-shrink-0">
 					{landing.imageUrl ? (
 						<img
@@ -47,16 +47,16 @@ const layoutType = landing.layoutType || 'standard';
 							class="h-full w-full rounded-xl bg-slate-50 object-contain ring-1 ring-slate-100"
 						/>
 					) : (
-						<div class="flex h-28 w-full items-center justify-center rounded-xl bg-slate-100 text-slate-400 text-xs">
+						<div class="flex h-32 w-full items-center justify-center rounded-xl bg-slate-100 text-slate-400 text-xs">
 							Нет изображения
 						</div>
 					)}
 				</div>
 				<div class="min-w-0 space-y-1">
-					<h1 class="text-base font-bold leading-tight text-slate-900 sm:text-lg line-clamp-2">
+					<h1 class="text-lg font-bold leading-tight text-slate-900 sm:text-xl line-clamp-2">
 						{landing.title}
 					</h1>
-					<p class="text-sm leading-snug text-slate-600 sm:text-base line-clamp-3">
+					<p class="text-base leading-snug text-slate-600 sm:text-lg line-clamp-3">
 						{landing.description}
 					</p>
 				</div>
