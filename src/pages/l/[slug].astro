@@ -35,91 +35,96 @@ const layoutType = landing.layoutType || 'standard';
 	image={landing.imageUrl || undefined}
 >
 	{layoutType === 'compact' ? (
-		<!-- Компактный вариант: все на одном экране без прокрутки -->
-		<div class="mx-auto flex min-h-screen max-w-6xl flex-col justify-center px-4 py-3 sm:px-6 sm:py-4">
-			<header class="mb-3 grid grid-cols-[auto_1fr] items-start gap-3 sm:gap-4">
+		<!-- Компактный вариант: все на одном экране без прокрутки, на всю ширину -->
+		<div class="flex min-h-screen w-full flex-col justify-center px-4 py-4 sm:px-6 sm:py-6">
+			<header class="mb-4 grid grid-cols-[auto_1fr] items-start gap-4 sm:gap-6">
 				<div class="flex-shrink-0">
 					{landing.imageUrl ? (
 						<img
 							src={landing.imageUrl}
 							alt={landing.title}
-							class="h-24 w-24 rounded-xl bg-slate-50 object-contain ring-1 ring-slate-100 sm:h-32 sm:w-32"
+							class="h-32 w-32 rounded-2xl bg-slate-50 object-contain ring-1 ring-slate-100 sm:h-48 sm:w-48"
 						/>
 					) : (
-						<div class="flex h-24 w-24 items-center justify-center rounded-xl bg-slate-100 text-slate-400 text-xs sm:h-32 sm:w-32">
+						<div class="flex h-32 w-32 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 text-xs sm:h-48 sm:w-48">
 							Нет изображения
 						</div>
 					)}
 				</div>
-				<div class="min-w-0 space-y-1.5">
-					<h1 class="text-lg font-bold leading-tight text-slate-900 sm:text-xl line-clamp-2">
+				<div class="min-w-0 space-y-2">
+					<h1 class="text-xl font-bold leading-tight text-slate-900 sm:text-2xl lg:text-3xl">
 						{landing.title}
 					</h1>
-					<p class="text-xs leading-snug text-slate-600 sm:text-sm line-clamp-2">
+					<p class="text-sm leading-relaxed text-slate-600 sm:text-base line-clamp-3">
 						{landing.description}
 					</p>
-					<div class="flex gap-2 text-xs">
+					<div class="flex flex-wrap items-center gap-3 text-sm sm:text-base">
 						{rating > 0 && (
-							<span class="flex items-center gap-1 text-amber-600">
-								<span>★</span>
-								<span class="font-semibold">{rating.toFixed(1)}</span>
+							<span class="flex items-center gap-1.5 rounded-lg bg-amber-50 px-3 py-1.5 text-amber-700">
+								<span class="text-lg">★</span>
+								<span class="font-bold">{rating.toFixed(1)}</span>
+								<span class="text-xs text-amber-600">оценка</span>
 							</span>
 						)}
 						{reviews > 0 && (
-							<span class="text-slate-600">
-								{reviews.toLocaleString('ru-RU')} отзывов
+							<span class="flex items-center gap-1.5 rounded-lg bg-slate-50 px-3 py-1.5 text-slate-700">
+								<span>💬</span>
+								<span class="font-semibold">{reviews.toLocaleString('ru-RU')}</span>
+								<span class="text-xs text-slate-600">отзывов</span>
 							</span>
 						)}
 						{purchases > 0 && (
-							<span class="text-slate-600">
-								{purchases.toLocaleString('ru-RU')} покупок
+							<span class="flex items-center gap-1.5 rounded-lg bg-slate-50 px-3 py-1.5 text-slate-700">
+								<span>🛒</span>
+								<span class="font-semibold">{purchases.toLocaleString('ru-RU')}</span>
+								<span class="text-xs text-slate-600">покупок</span>
 							</span>
 						)}
 					</div>
 				</div>
 			</header>
 
-			<section class="space-y-1.5">
-				<h2 class="text-sm font-semibold text-slate-900 sm:text-base">Выбери маркетплейс</h2>
-				<div class="grid grid-cols-1 gap-1.5 sm:grid-cols-3">
+			<section class="space-y-2">
+				<h2 class="text-base font-semibold text-slate-900 sm:text-lg">Выбери маркетплейс</h2>
+				<div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
 					{landing.linkWb && (
 						<a
-							class="flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold text-white transition duration-150"
+							class="flex w-full items-center justify-between gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white transition duration-150 hover:opacity-90 sm:text-base"
 							style="background:#A53DFF"
 							href={landing.linkWb}
 							target="_blank"
 							rel="noopener noreferrer"
 						>
 							<span class="truncate">Wildberries</span>
-							<span class="rounded-lg bg-white/15 px-2 py-0.5 text-xs font-medium text-white/90">
+							<span class="flex-shrink-0 rounded-lg bg-white/15 px-3 py-1 text-xs font-medium text-white/90 sm:text-sm">
 								Перейти
 							</span>
 						</a>
 					)}
 					{landing.linkOzon && (
 						<a
-							class="flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold text-white transition duration-150"
+							class="flex w-full items-center justify-between gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white transition duration-150 hover:opacity-90 sm:text-base"
 							style="background:#3B6CFF"
 							href={landing.linkOzon}
 							target="_blank"
 							rel="noopener noreferrer"
 						>
 							<span class="truncate">Ozon</span>
-							<span class="rounded-lg bg-white/15 px-2 py-0.5 text-xs font-medium text-white/90">
+							<span class="flex-shrink-0 rounded-lg bg-white/15 px-3 py-1 text-xs font-medium text-white/90 sm:text-sm">
 								Перейти
 							</span>
 						</a>
 					)}
 					{landing.linkYm && (
 						<a
-							class="flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold text-white transition duration-150"
+							class="flex w-full items-center justify-between gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white transition duration-150 hover:opacity-90 sm:text-base"
 							style="background:#F4C542"
 							href={landing.linkYm}
 							target="_blank"
 							rel="noopener noreferrer"
 						>
 							<span class="truncate">Яндекс Маркет</span>
-							<span class="rounded-lg bg-white/15 px-2 py-0.5 text-xs font-medium text-white/90">
+							<span class="flex-shrink-0 rounded-lg bg-white/15 px-3 py-1 text-xs font-medium text-white/90 sm:text-sm">
 								Перейти
 							</span>
 						</a>
@@ -127,7 +132,7 @@ const layoutType = landing.layoutType || 'standard';
 				</div>
 			</section>
 
-			<footer class="mt-2 text-[10px] leading-relaxed text-slate-400 sm:text-xs">
+			<footer class="mt-3 text-xs leading-relaxed text-slate-400 sm:text-sm">
 				Не является публичной офертой. Информация предоставлена партнёром.
 			</footer>
 		</div>
