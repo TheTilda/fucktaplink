@@ -36,7 +36,7 @@ const layoutType = landing.layoutType || 'standard';
 >
 	{layoutType === 'compact' ? (
 		<!-- Компактный вариант: все на одном экране мобильного устройства -->
-		<div class="flex h-screen w-full flex-col overflow-hidden px-3 py-3 sm:px-4 sm:py-4">
+		<div class="mx-auto flex h-screen w-full max-w-md flex-col overflow-hidden px-3 py-3 sm:px-4 sm:py-4">
 			<!-- Верхний блок: картинка слева (больше), текст справа -->
 			<header class="mb-1.5 grid grid-cols-[1.5fr_2.5fr] items-start gap-2 sm:gap-3">
 				<div class="flex-shrink-0">
