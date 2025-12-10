@@ -26,6 +26,7 @@ void db
 const rating = parseFloat(landing.rating || '0');
 const reviews = landing.reviews || 0;
 const purchases = landing.purchases || 0;
+const layoutType = landing.layoutType || 'standard';
 ---
 
 <BaseLayout
@@ -33,63 +34,164 @@ const purchases = landing.purchases || 0;
 	description={landing.description}
 	image={landing.imageUrl || undefined}
 >
-	<div class="mx-auto flex min-h-screen max-w-5xl flex-col gap-8 px-4 py-8 sm:px-6 sm:py-12 lg:px-10">
-		<header class="grid grid-cols-1 items-start gap-6 sm:grid-cols-[1fr_1.2fr]">
-			<div class="flex justify-center">
-				{landing.imageUrl ? (
-					<img
-						src={landing.imageUrl}
-						alt={landing.title}
-						class="h-auto w-full max-w-[320px] rounded-3xl bg-slate-50 object-contain ring-1 ring-slate-100"
-					/>
-				) : (
-					<div class="flex h-64 w-full max-w-[320px] items-center justify-center rounded-3xl bg-slate-100 text-slate-400">
-						Нет изображения
-					</div>
-				)}
-			</div>
-			<div class="space-y-4">
-				<div class="space-y-2">
-					<h1 class="text-3xl font-bold leading-tight text-slate-900 sm:text-4xl">
+	{layoutType === 'compact' ? (
+		<!-- Компактный вариант: все на одном экране без прокрутки -->
+		<div class="mx-auto flex min-h-screen max-w-6xl flex-col justify-center px-4 py-3 sm:px-6 sm:py-4">
+			<header class="mb-3 grid grid-cols-[auto_1fr] items-start gap-3 sm:gap-4">
+				<div class="flex-shrink-0">
+					{landing.imageUrl ? (
+						<img
+							src={landing.imageUrl}
+							alt={landing.title}
+							class="h-24 w-24 rounded-xl bg-slate-50 object-contain ring-1 ring-slate-100 sm:h-32 sm:w-32"
+						/>
+					) : (
+						<div class="flex h-24 w-24 items-center justify-center rounded-xl bg-slate-100 text-slate-400 text-xs sm:h-32 sm:w-32">
+							Нет изображения
+						</div>
+					)}
+				</div>
+				<div class="min-w-0 space-y-1.5">
+					<h1 class="text-lg font-bold leading-tight text-slate-900 sm:text-xl line-clamp-2">
 						{landing.title}
 					</h1>
-					<p class="text-base leading-relaxed text-slate-600 sm:text-lg">
+					<p class="text-xs leading-snug text-slate-600 sm:text-sm line-clamp-2">
 						{landing.description}
 					</p>
+					<div class="flex gap-2 text-xs">
+						{rating > 0 && (
+							<span class="flex items-center gap-1 text-amber-600">
+								<span>★</span>
+								<span class="font-semibold">{rating.toFixed(1)}</span>
+							</span>
+						)}
+						{reviews > 0 && (
+							<span class="text-slate-600">
+								{reviews.toLocaleString('ru-RU')} отзывов
+							</span>
+						)}
+						{purchases > 0 && (
+							<span class="text-slate-600">
+								{purchases.toLocaleString('ru-RU')} покупок
+							</span>
+						)}
+					</div>
 				</div>
-				<StatsCards rating={rating} reviews={reviews} purchases={purchases} />
-			</div>
-		</header>
+			</header>
 
-		<section class="space-y-3">
-			<h2 class="text-xl font-semibold text-slate-900 sm:text-2xl">Выбери маркетплейс</h2>
-			<div class="flex flex-col gap-3">
-				{landing.linkWb && (
-					<MarketplaceButton
-						label="Wildberries"
-						color="#A53DFF"
-						href={landing.linkWb}
-					/>
-				)}
-				{landing.linkOzon && (
-					<MarketplaceButton
-						label="Ozon"
-						color="#3B6CFF"
-						href={landing.linkOzon}
-					/>
-				)}
-				{landing.linkYm && (
-					<MarketplaceButton
-						label="Яндекс Маркет"
-						color="#F4C542"
-						href={landing.linkYm}
-					/>
-				)}
-			</div>
-		</section>
+			<section class="space-y-1.5">
+				<h2 class="text-sm font-semibold text-slate-900 sm:text-base">Выбери маркетплейс</h2>
+				<div class="grid grid-cols-1 gap-1.5 sm:grid-cols-3">
+					{landing.linkWb && (
+						<a
+							class="flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold text-white transition duration-150"
+							style="background:#A53DFF"
+							href={landing.linkWb}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<span class="truncate">Wildberries</span>
+							<span class="rounded-lg bg-white/15 px-2 py-0.5 text-xs font-medium text-white/90">
+								Перейти
+							</span>
+						</a>
+					)}
+					{landing.linkOzon && (
+						<a
+							class="flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold text-white transition duration-150"
+							style="background:#3B6CFF"
+							href={landing.linkOzon}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<span class="truncate">Ozon</span>
+							<span class="rounded-lg bg-white/15 px-2 py-0.5 text-xs font-medium text-white/90">
+								Перейти
+							</span>
+						</a>
+					)}
+					{landing.linkYm && (
+						<a
+							class="flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold text-white transition duration-150"
+							style="background:#F4C542"
+							href={landing.linkYm}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<span class="truncate">Яндекс Маркет</span>
+							<span class="rounded-lg bg-white/15 px-2 py-0.5 text-xs font-medium text-white/90">
+								Перейти
+							</span>
+						</a>
+					)}
+				</div>
+			</section>
 
-		<footer class="mt-auto text-sm leading-relaxed text-slate-500">
-			Не является публичной офертой. Информация предоставлена партнёром.
-		</footer>
-	</div>
+			<footer class="mt-2 text-[10px] leading-relaxed text-slate-400 sm:text-xs">
+				Не является публичной офертой. Информация предоставлена партнёром.
+			</footer>
+		</div>
+	) : (
+		<!-- Стандартный вариант: текущая верстка -->
+		<div class="mx-auto flex min-h-screen max-w-5xl flex-col gap-8 px-4 py-8 sm:px-6 sm:py-12 lg:px-10">
+			<header class="grid grid-cols-1 items-start gap-6 sm:grid-cols-[1fr_1.2fr]">
+				<div class="flex justify-center">
+					{landing.imageUrl ? (
+						<img
+							src={landing.imageUrl}
+							alt={landing.title}
+							class="h-auto w-full max-w-[320px] rounded-3xl bg-slate-50 object-contain ring-1 ring-slate-100"
+						/>
+					) : (
+						<div class="flex h-64 w-full max-w-[320px] items-center justify-center rounded-3xl bg-slate-100 text-slate-400">
+							Нет изображения
+						</div>
+					)}
+				</div>
+				<div class="space-y-4">
+					<div class="space-y-2">
+						<h1 class="text-3xl font-bold leading-tight text-slate-900 sm:text-4xl">
+							{landing.title}
+						</h1>
+						<p class="text-base leading-relaxed text-slate-600 sm:text-lg">
+							{landing.description}
+						</p>
+					</div>
+					<StatsCards rating={rating} reviews={reviews} purchases={purchases} />
+				</div>
+			</header>
+
+			<section class="space-y-3">
+				<h2 class="text-xl font-semibold text-slate-900 sm:text-2xl">Выбери маркетплейс</h2>
+				<div class="flex flex-col gap-3">
+					{landing.linkWb && (
+						<MarketplaceButton
+							label="Wildberries"
+							color="#A53DFF"
+							href={landing.linkWb}
+						/>
+					)}
+					{landing.linkOzon && (
+						<MarketplaceButton
+							label="Ozon"
+							color="#3B6CFF"
+							href={landing.linkOzon}
+						/>
+					)}
+					{landing.linkYm && (
+						<MarketplaceButton
+							label="Яндекс Маркет"
+							color="#F4C542"
+							href={landing.linkYm}
+						/>
+					)}
+				</div>
+			</section>
+
+			<footer class="mt-auto text-sm leading-relaxed text-slate-500">
+				Не является публичной офертой. Информация предоставлена партнёром.
+			</footer>
+		</div>
+	)}
 </BaseLayout>
+

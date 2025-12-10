@@ -78,6 +78,7 @@ export const landings = mysqlTable(
 		linkWb: text('link_wb'),
 		linkOzon: text('link_ozon'),
 		linkYm: text('link_ym'),
+		layoutType: varchar('layout_type', { length: 20 }).default('standard'), // 'standard' или 'compact'
 		status: varchar('status', { length: 20 }).default('active'),
 		views: int('views').notNull().default(0),
 		createdAt: datetime('created_at', { mode: 'date', fsp: 3 }).default(sql`CURRENT_TIMESTAMP(3)`),

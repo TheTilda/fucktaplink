@@ -1,0 +1,1 @@
+ALTER TABLE `landings` ADD `layout_type` varchar(20) DEFAULT 'standard';

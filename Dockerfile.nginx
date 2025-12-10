@@ -40,3 +40,4 @@ EXPOSE 80
 
 # Запускаем nginx и приложение одновременно
 CMD sh -c "node dist/server/entry.mjs & nginx -g 'daemon off;'"
+

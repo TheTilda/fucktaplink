@@ -16,6 +16,7 @@ const createSchema = z.object({
 	linkWb: z.string().url().optional(),
 	linkOzon: z.string().url().optional(),
 	linkYm: z.string().url().optional(),
+	layoutType: z.enum(['standard', 'compact']).default('standard'),
 	status: z.enum(['active', 'inactive']).default('active')
 });
 
@@ -31,6 +32,7 @@ const updateSchema = z.object({
 	linkWb: z.string().url().optional(),
 	linkOzon: z.string().url().optional(),
 	linkYm: z.string().url().optional(),
+	layoutType: z.enum(['standard', 'compact']).optional(),
 	status: z.enum(['active', 'inactive']).optional()
 });
 
@@ -76,6 +78,7 @@ export const POST: APIRoute = async ({ request }) => {
 				linkWb: parsed.linkWb,
 				linkOzon: parsed.linkOzon,
 				linkYm: parsed.linkYm,
+				layoutType: parsed.layoutType || 'standard',
 				status: parsed.status
 			})
 			.$returningId();
@@ -120,6 +123,7 @@ export const PUT: APIRoute = async ({ request }) => {
 		if (parsed.linkWb !== undefined) updateData.linkWb = parsed.linkWb;
 		if (parsed.linkOzon !== undefined) updateData.linkOzon = parsed.linkOzon;
 		if (parsed.linkYm !== undefined) updateData.linkYm = parsed.linkYm;
+		if (parsed.layoutType !== undefined) updateData.layoutType = parsed.layoutType;
 		if (parsed.status !== undefined) updateData.status = parsed.status;
 
 		await db
@@ -154,3 +158,4 @@ export const DELETE: APIRoute = async ({ request }) => {
 		return new Response(JSON.stringify({ message: 'bad request' }), { status: 400 });
 	}
 };
+

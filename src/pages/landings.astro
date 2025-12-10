@@ -64,6 +64,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 				<span>Яндекс Маркет URL</span>
 				<input id="input-link-ym" name="linkYm" type="url" class="rounded-lg border border-slate-200 px-3 py-2 text-sm" placeholder="https://market.yandex.ru/..." />
 			</label>
+			<label class="flex flex-col gap-1 text-sm text-slate-700">
+				<span>Вариант верстки:</span>
+				<select id="select-layout" name="layoutType" class="rounded-lg border border-slate-200 px-3 py-2 text-sm">
+					<option value="standard">Стандартный</option>
+					<option value="compact">Компактный</option>
+				</select>
+				<p class="text-xs text-slate-500">Компактный вариант показывает всю страницу без прокрутки</p>
+			</label>
 			<div class="flex items-center gap-2 text-sm text-slate-700">
 				<span>Статус:</span>
 				<select id="select-status" name="status" class="rounded-lg border border-slate-200 px-3 py-2 text-sm">
@@ -127,6 +135,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 		const inputLinkWb = document.getElementById('input-link-wb');
 		const inputLinkOzon = document.getElementById('input-link-ozon');
 		const inputLinkYm = document.getElementById('input-link-ym');
+		const selectLayout = document.getElementById('select-layout');
 		const selectStatus = document.getElementById('select-status');
 
 		let currentLandings = [];
@@ -167,6 +176,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 			inputLinkWb.value = item.linkWb || '';
 			inputLinkOzon.value = item.linkOzon || '';
 			inputLinkYm.value = item.linkYm || '';
+			selectLayout.value = item.layoutType || 'standard';
 			selectStatus.value = item.status || 'active';
 			fileName.textContent = item.imageUrl ? 'Текущее изображение сохранено' : 'Файл не выбран';
 			chosenFile = null;
@@ -265,6 +275,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 				linkWb: inputLinkWb.value || undefined,
 				linkOzon: inputLinkOzon.value || undefined,
 				linkYm: inputLinkYm.value || undefined,
+				layoutType: selectLayout.value,
 				status: selectStatus.value,
 				...(imageUrl && { imageUrl })
 			};
@@ -301,3 +312,4 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 		fetchLandings();
 	</script>
 </BaseLayout>
+

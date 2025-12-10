@@ -46,3 +46,4 @@ export const POST: APIRoute = async ({ request }) => {
 		return new Response(JSON.stringify({ message: 'bad request' }), { status: 400 });
 	}
 };
+
