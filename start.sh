@@ -24,3 +24,4 @@ fi
 # Используем env для гарантированной передачи переменных в процесс Node.js
 exec env HOST=0.0.0.0 PORT=$PORT node dist/server/entry.mjs
 
+

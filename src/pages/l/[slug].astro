@@ -35,7 +35,7 @@ const layoutType = landing.layoutType || 'standard';
 	image={landing.imageUrl || undefined}
 >
 	{layoutType === 'compact' ? (
-		<!-- Компактный вариант: идентичен стандартному -->
+		<!-- Компактный вариант: кнопки маркетплейсов в одну строку на мобильных -->
 		<div class="mx-auto flex min-h-screen max-w-5xl flex-col gap-8 px-4 py-8 sm:px-6 sm:py-12 lg:px-10">
 			<header class="grid grid-cols-1 items-start gap-6 sm:grid-cols-[1fr_1.2fr]">
 				<div class="flex justify-center">
@@ -66,7 +66,7 @@ const layoutType = landing.layoutType || 'standard';
 
 			<section class="space-y-3">
 				<h2 class="text-xl font-semibold text-slate-900 sm:text-2xl">Выбери маркетплейс</h2>
-				<div class="flex flex-col gap-3">
+				<div class="grid grid-cols-3 gap-2 sm:gap-3">
 					{landing.linkWb && (
 						<MarketplaceButton
 							label="Wildberries"
