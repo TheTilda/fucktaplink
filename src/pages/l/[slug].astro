@@ -56,7 +56,7 @@ const layoutType = landing.layoutType || 'standard';
 					<h1 class="text-lg font-bold leading-tight text-slate-900 sm:text-xl line-clamp-2">
 						{landing.title}
 					</h1>
-					<p class="text-base leading-snug text-slate-600 sm:text-lg line-clamp-4">
+					<p class="text-base leading-snug text-slate-600 sm:text-lg line-clamp-6">
 						{landing.description}
 					</p>
 				</div>
@@ -69,7 +69,7 @@ const layoutType = landing.layoutType || 'standard';
 
 			<!-- Кнопки маркетплейсов в столбик, во всю ширину -->
 			<section class="space-y-1">
-				<h2 class="text-xl font-semibold text-slate-900 sm:text-2xl">Выбери маркетплейс</h2>
+				<h2 class="text-center text-xl font-semibold text-slate-900 sm:text-2xl">Выбери маркетплейс</h2>
 				<div class="flex flex-col gap-1.5">
 					{landing.linkWb && (
 						<MarketplaceButton
